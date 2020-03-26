@@ -19,8 +19,10 @@ class Jira extends BaseProvider {
     public async parseData() {
         this.setEmbedColor(0x1e45a8)
 
+        console.log(this.body);
+
         var issue = this.body.issue;
-        if (issue.fields.assignee === null) {
+        if (!(issue && issue.fields && issue.fields.assignee)) {
             issue.fields.assignee = {displayName: "nobody"};
         }
     

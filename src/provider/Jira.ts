@@ -29,10 +29,6 @@ class Jira extends BaseProvider {
 
         if (this.body.webhookEvent.startsWith('jira:issue_')) {
             isIssue = true
-        } else if (this.body.webhookEvent.startsWith('comment_')) {
-            isIssue = false
-        } else {
-            return
         }
 
         // extract variable from Jira
@@ -46,37 +42,41 @@ class Jira extends BaseProvider {
         const domain = matches && matches[1]
 
         let moveToDone = false
+        let comment = null
 
-        //Check if it is to be done
+        //Only issue update for now.
         if (isIssue) {
-            //If have changelog
+            // create the embed
+            const embed = new Embed()
+            embed.title = `${issue.key} - ${issue.fields.summary}`
+            embed.url = `${domain}/browse/${issue.key}`
+
+            // Check if having changelog
             if (this.body.changelog &&
                 this.body.changelog.items &&
                 this.body.changelog.items[0]) {
-                    if (this.body.changelog.items[0].toString == "Done") {
+                    if (this.body.changelog.items[0].toString === 'Done') {
                         moveToDone = true
                     }
-                }
-        }
+            // Check if having comment
+            } else if (this.body.comment) {
+                    comment = this.body.comment
+            }
 
-        // create the embed
-        const embed = new Embed()
-        embed.title = `${issue.key} - ${issue.fields.summary}`
-        embed.url = `${domain}/browse/${issue.key}`
-        if (isIssue) {
             if (action === 'created') {
                 embed.description = `${user.displayName} ${action} issue: ${embed.title} (assigned to ${issue.fields.assignee.displayName})`
-            } else if(moveToDone) {
+            } else if (moveToDone) {
                 embed.description = `Hooray!!! ${user.displayName} CLOSED issue: ${embed.title} (assigned to ${issue.fields.assignee.displayName})`
+            } else if (comment) {
+                embed.description = `${comment.updateAuthor.displayName} ${action} comment: ${comment.body} on issue: ${embed.title} (assigned to ${issue.fields.assignee.displayName})`
             } else {
                 //Other cases, do not send the notification, it is too much.
                 return
             }
+            this.addEmbed(embed)
         } else {
-            const comment = this.body.comment
-            embed.description = `${comment.updateAuthor.displayName} ${action} comment: ${comment.body} on issue: ${embed.title} (assigned to ${issue.fields.assignee.displayName})`
+            return
         }
-        this.addEmbed(embed)
     }
 }
 

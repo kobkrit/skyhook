@@ -48,7 +48,6 @@ class Jira extends BaseProvider {
         if (isIssue) {
             // create the embed
             const embed = new Embed()
-            embed.title = `${issue.key} - ${issue.fields.summary}`
             embed.url = `${domain}/browse/${issue.key}`
 
             // Check if having changelog
@@ -64,10 +63,13 @@ class Jira extends BaseProvider {
             }
 
             if (action === 'created') {
+                embed.title = `😘 New Issue! ${issue.key} - ${issue.fields.summary}`
                 embed.description = `${user.displayName} ${action} issue: ${embed.title} (assigned to ${issue.fields.assignee.displayName})`
             } else if (moveToDone) {
+                embed.title = `😆 Issue DONE! ${issue.key} - ${issue.fields.summary}`
                 embed.description = `Hooray!!! ${user.displayName} CLOSED issue: ${embed.title} (assigned to ${issue.fields.assignee.displayName})`
             } else if (comment) {
+                embed.title = `🤔 New Comment! ${issue.key} - ${issue.fields.summary}`
                 embed.description = `${comment.updateAuthor.displayName} comment: \n\n \"${comment.body.trim()}\" \n\n on issue: ${embed.title} (assigned to ${issue.fields.assignee.displayName})`
             } else {
                 //Other cases, do not send the notification, it is too much.

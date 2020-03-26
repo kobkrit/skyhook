@@ -1,11 +1,13 @@
 import { Embed } from '../model/Embed'
 import { BaseProvider } from '../provider/BaseProvider'
 
+/**
+ * https://developer.atlassian.com/server/jira/platform/webhooks/
+ */
 class Jira extends BaseProvider {
-
-    private static capitalize(str: string) {
-        const tmp = str.toLowerCase()
-        return tmp.charAt(0).toUpperCase() + tmp.slice(1)
+    constructor() {
+        super()
+        this.setEmbedColor(0x1e45a8)
     }
 
     public getName() {
@@ -17,24 +19,35 @@ class Jira extends BaseProvider {
     }
 
     public async parseData() {
-        this.setEmbedColor(0x1e45a8)
+        let isIssue: boolean
+        if (this.body.webhookEvent.startsWith('jira:issue_')) {
+            isIssue = true
+        } else if (this.body.webhookEvent.startsWith('comment_')) {
+            isIssue = false
+        } else {
+            return
+        }
 
-        console.log(this.body);
-
-        var issue = this.body.issue;
+        // extract variable from Jira
+        const issue = this.body.issue
         if (!(issue && issue.fields && issue.fields.assignee)) {
             issue.fields.assignee = {displayName: "nobody"};
         }
-    
-        var user = this.body.user;
-        var action = this.body.issue_event_type_name.split('_')[1];
-        var matches = issue.self.match(/^(https?:\/\/[^\/?#]+)(?:[\/?#]|$)/i);
-        var domain = matches && matches[1];
-    
+        const user = this.body.user
+        const action = this.body.webhookEvent.split('_')[1]
+        const matches = issue.self.match(/^(https?:\/\/[^\/?#]+)(?:[\/?#]|$)/i)
+        const domain = matches && matches[1]
+
+        // create the embed
         const embed = new Embed()
         embed.title = `${issue.key} - ${issue.fields.summary}`
-        embed.description = `${user.displayName} ${action} the issue ${embed.title} (${issue.fields.assignee.displayName})`
-        embed.url = `${domain}/browse/${issue.key}`;
+        embed.url = `${domain}/browse/${issue.key}`
+        if (isIssue) {
+            embed.description = `${user.displayName} ${action} issue: ${embed.title} (${issue.fields.assignee.displayName})`
+        } else {
+            const comment = this.body.comment
+            embed.description = `${comment.updateAuthor.displayName} ${action} comment: ${comment.body}`
+        }
         this.addEmbed(embed)
     }
 }

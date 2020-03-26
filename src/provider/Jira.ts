@@ -21,7 +21,7 @@ class Jira extends BaseProvider {
     public async parseData() {
         let isIssue: boolean
 
-        console.log(this.body)
+        console.log(JSON.stringify(this.body))
 
         if (this.body.webhookEvent.startsWith('jira:issue_')) {
             isIssue = true

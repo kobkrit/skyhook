@@ -41,15 +41,36 @@ class Jira extends BaseProvider {
         const matches = issue.self.match(/^(https?:\/\/[^\/?#]+)(?:[\/?#]|$)/i)
         const domain = matches && matches[1]
 
+        let moveToDone = false
+
+        //Check if it is to be done
+        if (isIssue) {
+            //If have changelog
+            if (this.body.changelog &&
+                this.body.changelog.items &&
+                this.body.changelog.items[0]) {
+                    if (this.body.changelog.items[0].toString == "Done") {
+                        moveToDone = true
+                    }
+                }
+        }
+
         // create the embed
         const embed = new Embed()
         embed.title = `${issue.key} - ${issue.fields.summary}`
         embed.url = `${domain}/browse/${issue.key}`
         if (isIssue) {
-            embed.description = `${user.displayName} ${action} issue: ${embed.title} (${issue.fields.assignee.displayName})`
+            if (action === 'created') {
+                embed.description = `${user.displayName} ${action} issue: ${embed.title} (assigned to ${issue.fields.assignee.displayName})`
+            } else if(moveToDone) {
+                embed.description = `Hooray!!! ${user.displayName} CLOSED issue: ${embed.title} (assigned to ${issue.fields.assignee.displayName})`
+            } else {
+                //Other cases, do not send the notification, it is too much.
+                return
+            }
         } else {
             const comment = this.body.comment
-            embed.description = `${comment.updateAuthor.displayName} ${action} comment: ${comment.body}`
+            embed.description = `${comment.updateAuthor.displayName} ${action} comment: ${comment.body} on issue: ${embed.title} (assigned to ${issue.fields.assignee.displayName})`
         }
         this.addEmbed(embed)
     }

@@ -68,7 +68,7 @@ class Jira extends BaseProvider {
             } else if (moveToDone) {
                 embed.description = `Hooray!!! ${user.displayName} CLOSED issue: ${embed.title} (assigned to ${issue.fields.assignee.displayName})`
             } else if (comment) {
-                embed.description = `${comment.updateAuthor.displayName} ${action} comment: ${comment.body} on issue: ${embed.title} (assigned to ${issue.fields.assignee.displayName})`
+                embed.description = `${comment.updateAuthor.displayName} comment: \n\n \"${comment.body.trim()}\" \n\n on issue: ${embed.title} (assigned to ${issue.fields.assignee.displayName})`
             } else {
                 //Other cases, do not send the notification, it is too much.
                 return

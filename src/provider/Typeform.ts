@@ -15,10 +15,10 @@ class Typeform extends BaseProvider {
     return 'typeform'
   }
 
-  public getFieldTitle(fields, id) {
+  public getFieldTitle(fields: object, id: string): string {
     for (const field in fields) {
-      if (field.id === id) {
-        return field.title
+      if (field['id'] === id) {
+        return field['title']
       }
     }
     return 'N/A'
@@ -155,7 +155,7 @@ class Typeform extends BaseProvider {
     console.log(this.body)
 
     const embed = new Embed()
-    const title = `New Response - ${this.body.form_response.definition.title}`
+    const title = `มีลูกค้าสนใจสินค้าของเรา New Response - ${this.body.form_response.definition.title}`
     embed.title = title
 
     let desc = ''

@@ -23,6 +23,7 @@ import { Patreon } from './provider/Patreon'
 import { Pingdom } from './provider/Pingdom'
 import { Travis } from './provider/Travis'
 import { Trello } from './provider/Trello'
+import { Typeform } from './provider/Typeform'
 import { Unity } from './provider/Unity'
 import { UptimeRobot } from './provider/UptimeRobot'
 import { VSTS } from './provider/VSTS'
@@ -53,6 +54,7 @@ const providers: any[] = [
     Pingdom,
     Travis,
     Trello,
+    Typeform,
     Unity,
     UptimeRobot,
     VSTS

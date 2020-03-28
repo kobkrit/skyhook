@@ -181,7 +181,7 @@ class Typeform extends BaseProvider {
       }
       desc += '\n'
     }
-    embed.description = desc
+    embed.description = desc + "@kobkrit @pawarana @Kwang @Plawan @khomson"
     embed.url = `https://admin.typeform.com/form/${this.body.form_response.form_id}/results#responses`
     this.addEmbed(embed)
   }

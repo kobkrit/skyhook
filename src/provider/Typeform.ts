@@ -155,7 +155,7 @@ class Typeform extends BaseProvider {
     console.log(this.body)
 
     const embed = new Embed()
-    const title = `มีลูกค้าสนใจสินค้าของเรา New Response - ${this.body.form_response.definition.title}`
+    const title = `มีลูกค้าสนใจสินค้าของเรา 🥰🥰🥰 New Response - ${this.body.form_response.definition.title} 🥰🥰🥰`
     embed.title = title
 
     let desc = ''

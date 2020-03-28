@@ -15,8 +15,9 @@ class Typeform extends BaseProvider {
     return 'typeform'
   }
 
-  public getFieldTitle(fields: object, id: string): string {
-    for (const field in fields) {
+  public getFieldTitle(fields: Array<{id: string, title: string}>, id: string): string {
+    for (const field of fields) {
+      console.log('getFieldTitle', field, id)
       if (field['id'] === id) {
         return field['title']
       }

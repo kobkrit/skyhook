@@ -42,6 +42,8 @@ class Jira extends BaseProvider {
         const domain = matches && matches[1]
 
         let moveToDone = false
+        let moveToWin = false
+        let moveToLose = false
         let comment = null
 
         //Only issue update for now.
@@ -56,6 +58,10 @@ class Jira extends BaseProvider {
                 this.body.changelog.items[0]) {
                     if (this.body.changelog.items[0].toString === 'Done') {
                         moveToDone = true
+                    } else if (this.body.changelog.items[0].toString === 'Lose') {
+                        moveToLose = true
+                    } else if (this.body.changelog.items[0].toString === 'Win') {
+                        moveToWin = true
                     }
             // Check if having comment
             } else if (this.body.comment) {
@@ -68,6 +74,12 @@ class Jira extends BaseProvider {
             } else if (moveToDone) {
                 embed.title = `😆 Issue DONE! ${issue.key} - ${issue.fields.summary}`
                 embed.description = `Hooray!!! ${user.displayName} CLOSED issue: ${issue.key} - ${issue.fields.summary} (assigned to ${issue.fields.assignee.displayName})`
+            } else if (moveToWin) {
+                embed.title = `😆😆😆😆 WIN the DEAL! ${issue.key} - ${issue.fields.summary} 😆😆😆😆`
+                embed.description = `OHHHH YEAHHHH!!! ${user.displayName} CLOSED issue: ${issue.key} - ${issue.fields.summary} (assigned to ${issue.fields.assignee.displayName})`
+            } else if (moveToLose) {
+                embed.title = `😱😱😱😱 LOSE the DEAL! ${issue.key} - ${issue.fields.summary} 😱😱😱😱`
+                embed.description = `SAD!! ${user.displayName} CLOSED issue: ${issue.key} - ${issue.fields.summary} (assigned to ${issue.fields.assignee.displayName})`
             } else if (comment) {
                 embed.title = `🤔 New Comment! ${issue.key} - ${issue.fields.summary}`
                 embed.description = `${comment.updateAuthor.displayName} comment: \n\n \"${comment.body.trim()}\" \n\n on issue: ${issue.key} - ${issue.fields.summary} (assigned to ${issue.fields.assignee.displayName})`

@@ -176,13 +176,13 @@ class Typeform extends BaseProvider {
       } else if (answer.type === 'date') {
         desc += (i + 1) + '. ' + this.getFieldTitle(fields, answer.field.id) + ': ' + answer.date
       } else if (answer.type === 'choices') {
-        desc += (i + 1) + '. ' + this.getFieldTitle(fields, answer.field.id) + ': ' + answer.choice.labels.join(', ')
+        desc += (i + 1) + '. ' + this.getFieldTitle(fields, answer.field.id) + ': ' + answer.choices.labels.join(', ')
       } else if (answer.type === 'boolean') {
         desc += (i + 1) + '. ' + this.getFieldTitle(fields, answer.field.id) + ': ' + answer.boolean
       }
       desc += '\n'
     }
-    embed.description = desc + "@kobkrit @pawarana @Kwang @Plawan @khomson"
+    embed.description = desc
     embed.url = `https://admin.typeform.com/form/${this.body.form_response.form_id}/results#responses`
     this.addEmbed(embed)
   }
